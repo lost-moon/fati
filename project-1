@@ -1,0 +1,95 @@
+#include <iostream>
+#include <string>
+#include <vector>
+using namespace std;
+struct Student {
+    string name;
+    vector<double> grades;
+    double average;
+};
+void GetStudents(vector<Student>& students);
+void GetGrades(vector<double>& grades);
+double CalculateAverage(const vector<double>& grades);
+int FindTopStudent(const vector<Student>& students);
+int SearchStudent(const vector<Student>& students, const string& name);
+int main() {
+    vector<Student> students;
+    GetStudents(students);
+    int top_student_index = FindTopStudent(students);
+    if (top_student_index >= 0) {
+        cout << "The top student is " << students[top_student_index].name << " with an average grade of " << students[top_student_index].average << endl;
+    }
+    else {
+        cout << "There are no students in the list" << endl;
+    }
+    string search_name;
+    cout << "Enter a name to search for: ";
+    cin >> search_name;
+    int search_index = SearchStudent(students, search_name);
+    if (search_index >= 0) {
+        cout << "Student found: " << students[search_index].name << ", average grade: " << students[search_index].average << endl;
+    }
+    else {
+        cout << "Student not found" << endl;
+    }
+    return 0;
+}
+void GetStudents(vector<Student>& students) {
+    int num_students;
+    cout << "Enter the number of students: ";
+    cin >> num_students;
+    for (int i = 0; i < num_students; i++) {
+        Student student;
+        cout << "Enter the name of student " << i + 1 << ": ";
+        cin >> student.name;
+        GetGrades(student.grades);
+        student.average = CalculateAverage(student.grades);
+        students.push_back(student);
+    }
+}
+void GetGrades(vector<double>& grades) {
+    int num_grades;
+    cout << "Enter the number of grades for this student: ";
+    cin >> num_grades;
+
+    while (num_grades < 1) {
+        cout << "The number of grades must be at least 1. Please enter again: ";
+        cin >> num_grades;
+    }
+    for (int i = 0; i < num_grades; i++) {
+        double grade;
+        cout << "Enter grade " << i + 1 << " for this student: ";
+        cin >> grade;
+        grades.push_back(grade);
+    }
+}
+double CalculateAverage(const vector<double>& grades) {
+    double sum = 0;
+    for (double grade : grades) {
+        sum += grade;
+    }
+    return sum / grades.size();
+}
+int FindTopStudent(const vector<Student>& students) {
+    if (students.empty()) {
+        return -1;
+    }
+    int top_student_index = 0;
+    double top_average = students[0].average;
+
+    for (int i = 1; i < students.size(); i++) {
+        if (students[i].average > top_average) {
+            top_student_index = i;
+            top_average = students[i].average;
+        }
+    }
+    return top_student_index;
+}
+int SearchStudent(const vector<Student>& students, const string& name) {
+    for (int i = 0; i < students.size(); i++) {
+        if (students[i].name == name) {
+            return i;
+        }
+    }
+    return -1;
+}
